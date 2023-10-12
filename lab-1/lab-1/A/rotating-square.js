@@ -26,6 +26,18 @@ function set_speed(obj)
     switch(selection) {
         
         // A0: ADD CODE HERE
+        case 'slow':
+            theta_step = 0.005;
+            break;
+        case 'medium':
+            theta_step = 0.01;
+            break;
+        case 'fast':
+            theta_step = 0.02;
+            break;
+        case 'pause':
+            theta_step = 0.0;
+            break;
 
     }
     console.log('Angle step is ' + theta_step);
@@ -64,19 +76,28 @@ window.onload = async function()
     vertices = [[0,1], [-1,0], [1,0], [0,-1]];
 
     // A5: MODIFY BELOW
+    indices = [0, 1, 0, 2, 0, 3, 1, 2, 1, 3, 2, 3];
 
     // vertex indices for line drawing
-    indices = [0, 1];
+    //indices = [0, 1];
 
     // RGBA values
     colours = [
         [1.0,  0.0,  0.0,  1.0], // red
         [0.0,  1.0,  0.0,  1.0], // green
         [0.0,  0.0,  1.0,  1.0], // blue
-        [1.0,  1.0,  1.0,  1.0]  // white
+        [1.0,  1.0,  1.0,  1.0],  // white
+
+        [0.0, 0.0, 0.0, 1.0], // black
+        [0.0, 0.0, 0.0, 1.0], // black
+        [0.0, 0.0, 0.0, 1.0], // black
+        [0.0, 0.0, 0.0, 1.0], // black
+        [0.0, 0.0, 0.0, 1.0], // black
+        [0.0, 0.0, 0.0, 1.0], // black
     ];
 
     // A6: APPEND SIX BLACK VERTICES
+
 
     // --- geometry and colour setup ---
 
@@ -129,12 +150,18 @@ function render() {
     gl.uniform1f(theta_loc, theta);
 
     // A4 & A5: MODIFY BELOW
+    // connect vertex_colour attribute in shader to colour_buf
+    gl.vertexAttribPointer(colour_loc, 4, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(colour_loc);
+    let num_line_vertices = indices.length;
+    gl.drawElements(gl.LINES, num_line_vertices, gl.UNSIGNED_SHORT, 0);
 
     // draw triangle strip
-    let num_strip_vertices = vertices.length;
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, num_strip_vertices);
+    //let num_strip_vertices = vertices.length;
+    //gl.drawArrays(gl.TRIANGLE_STRIP, 0, num_strip_vertices);
 
     // A6: ADD CODE HERE
+    
 
     // check if screen capture requested
     capture_canvas_check();
