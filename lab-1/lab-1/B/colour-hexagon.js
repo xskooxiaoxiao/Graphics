@@ -42,9 +42,17 @@ window.onload = async function()
 
     vertices = [];
     // B1: ADD CODE HERE
+    var num_vertices = 6;
+    for(var k = 0; k < num_vertices; k++){
+        let t = k/num_vertices * 2.0 * Math.PI;
+        let P = [ Math.cos(t), Math.sin(t) ];
+        vertices.push(P);
+    }
+    
 
-    indices = [];
+    indices = [0,1,1,2,2,3,3,4,4,5,5,0];
     // B1: ADD CODE HERE
+
 
     // RGBA values for hexagon
     // B2: MODIFY THE COLOURS

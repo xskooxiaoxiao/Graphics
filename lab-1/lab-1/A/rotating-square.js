@@ -151,14 +151,18 @@ function render() {
 
     // A4 & A5: MODIFY BELOW
     // connect vertex_colour attribute in shader to colour_buf
+    let black_offset = vertices.length * 4 * 4;
+
+    // draw triangle strip
     gl.vertexAttribPointer(colour_loc, 4, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(colour_loc);
+    let num_strip_vertices = vertices.length;
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, num_strip_vertices);
+
+    gl.vertexAttribPointer(colour_loc, 4, gl.FLOAT, false, 0, black_offset);
     gl.enableVertexAttribArray(colour_loc);
     let num_line_vertices = indices.length;
     gl.drawElements(gl.LINES, num_line_vertices, gl.UNSIGNED_SHORT, 0);
-
-    // draw triangle strip
-    //let num_strip_vertices = vertices.length;
-    //gl.drawArrays(gl.TRIANGLE_STRIP, 0, num_strip_vertices);
 
     // A6: ADD CODE HERE
     
