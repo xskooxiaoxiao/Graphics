@@ -5,13 +5,34 @@ const vs_file = './rotating-shape-vert.glsl';
 const fs_file = './rotating-shape-frag.glsl';
 
 // rotation angle, and location in shader
-var theta = 0.0;
-var theta_loc;
 
 // buffers and attributes
-var vertices, indices, colours;
-var index_buf, colour_buf;
-var colour_loc;
+var vertices, indices, colours, vertices_colours;
+
+// C1,C2: MODIFY HERE
+//var num_vertices = 8;
+var num_vertices = 1000;
+
+function rgba_wheel(t)
+{
+   // generate a crude colour wheel, for t in [0,2pi]
+
+   // 120 degrees to separate R-G-B around the wheel
+   let u = 2*Math.PI/3;
+
+   // cosine waves offset by 120 degrees, and mapped to values in [0,1]
+   return [ (1 + Math.cos(t))/2, 
+            (1 + Math.cos(t-u))/2, 
+            (1 + Math.cos(t+u))/2, 1];
+}
+
+// C5: ADD FUNCTION HERE
+function squircle(t, n)
+{
+   let x = Math.pow(Math.abs(Math.cos(t)), 2/n) * Math.sign(Math.cos(t));
+   let y = Math.pow(Math.abs(Math.sin(t)), 2/n) * Math.sign(Math.sin(t));
+   return [x, y];
+}
 
 // intialization --- called once per page load
 window.onload = async function()
@@ -28,6 +49,7 @@ window.onload = async function()
    // global window settings
    gl.viewport(0, 0, canvas.width, canvas.height);
    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+   gl.lineWidth(10.0);
 
    // load the shader source code into JS strings
    const vs_src = await fetch(vs_file).then(out => out.text());
@@ -40,62 +62,49 @@ window.onload = async function()
 
     // --- geometry and colour data ---
 
+    // data for attributes
     vertices = [];
-    // B1: ADD CODE HERE
-    var num_vertices = 6;
-    for(var k = 0; k < num_vertices; k++){
-        let t = k/num_vertices * 2.0 * Math.PI;
-        let P = [ Math.cos(t), Math.sin(t) ];
-        vertices.push(P);
-    }
-    
+    colours = []; 
 
-    indices = [0,1,1,2,2,3,3,4,4,5,5,0];
-    // B1: ADD CODE HERE
+    // C1, C3, C4, C5: ADD CODE HERE
+    for(var k = 0; k <= num_vertices; k++){
+      let scale = k/num_vertices;
+      let t = 16 * k/num_vertices * 2.0 * Math.PI;
+      //let P = [ 0.99*Math.cos(t), 0.99*Math.sin(t) ];
+      let P = squircle(t, 1);
+      P[0] *= scale;
+      P[1] *= scale;
+      vertices.push(P);
+      //colours.push([1.0, 0.0, 0.0, 1.0]);
+      colours.push(rgba_wheel(t));
+   }
 
 
-    // RGBA values for hexagon
-    // B2: MODIFY THE COLOURS
-    colours = [
-        [0.0, 0.0, 0.0, 1.0],
-        [0.0, 0.0, 0.0, 1.0],
-        [0.0, 0.0, 0.0, 1.0],
-        [0.0, 0.0, 0.0, 1.0],
-        [0.0, 0.0, 0.0, 1.0],
-        [0.0, 0.0, 0.0, 1.0],
-        [0.0, 0.0, 0.0, 1.0]
-    ];
+    // D1 (OPTIONAL): MODIFY FOLLOWING CODE
 
-    // --- geometry and colour setup ---
+    // --- geometry setup ---
 
-    // setup vertex array
+    // create and fill vertex buffer
     let vertex_buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buf);
     gl.bufferData(gl.ARRAY_BUFFER, mat_float_flat(vertices), gl.STATIC_DRAW);
 
     // connect vertex variable in shader to vertex_buf (the current ARRAY_BUFFER)
-    let vertex_loc = gl.getAttribLocation(program, "vertex");
+    let vertex_loc = gl.getAttribLocation(program, 'vertex');
     gl.vertexAttribPointer(vertex_loc, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vertex_loc);
 
-    // setup vertex colours
-    const colour_buf = gl.createBuffer();
+    // --- colour setup ---
+
+    // create and fill vertex colour buffer
+    let colour_buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, colour_buf);
     gl.bufferData(gl.ARRAY_BUFFER, mat_float_flat(colours), gl.STATIC_DRAW);
-    colour_loc = gl.getAttribLocation(program, 'colour');
 
-    // note that colour_buf will remain the current ARRAY_BUFFER
-
-    // setup edge indices
-    index_buf = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buf);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, mat_uint_flat(indices), gl.STATIC_DRAW);
-
-    // get locations of uniform angle variable from the shader
-    theta_loc = gl.getUniformLocation(program, "theta");
-
-    // drawing style
-    gl.lineWidth(5.0);
+    // connect colour variable in shader to colour_buf (the current ARRAY_BUFFER)
+    let colour_loc = gl.getAttribLocation(program, 'colour');
+    gl.vertexAttribPointer(colour_loc, 4, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(colour_loc);
 
     // start drawing
     render();
@@ -109,15 +118,8 @@ function render() {
     // clear the canvas
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    // no rotation
-    gl.uniform1f(theta_loc, 0.0);
-
-    gl.vertexAttribPointer(colour_loc, 4, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(colour_loc);
-    let num_line_vertices = indices.length;
-    
-    // B2: MODIFY CODE HERE
-    gl.drawElements(gl.LINE_STRIP, num_line_vertices, gl.UNSIGNED_SHORT, 0);
+    // draw strip including the duplicated last vertex 
+    gl.drawArrays(gl.LINE_STRIP, 0, num_vertices+1);
 
     // check if screen capture requested
     capture_canvas_check();
