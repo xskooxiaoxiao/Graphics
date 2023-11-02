@@ -1,7 +1,7 @@
 // GLSL VERTEX SHADER
 
 // 4x4 matrices
-uniform mat4 pre_scale, pre_rotate, rotate, shear, projective;
+uniform mat4 pre_scale, pre_rotate, rotate, shear, projective, projective_inv;
 
 uniform vec3 rgb;
 
@@ -28,9 +28,14 @@ void main()
 
     // A1, A2, A3, A4, A5 -- MODIFY HERE
     //point = rotate * point;
-    gl_Position = translate * rotate * translate_inv * point;
+    //gl_Position = translate * rotate * translate_inv * point;
+    //gl_Position = shear * point;
+    //gl_Position = projective * point;
+    gl_Position = projective_inv * projective * point;
 
     // pass uniform colour to fragment shader varying
+
     // A5 -- MODIFY HERE
-    colour = vec4(rgb, 1.0);
+    colour = vec4(gl_Position.w, 0.0, 0.0, 1.0);
+
 }

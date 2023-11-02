@@ -254,6 +254,7 @@ function render_control()
     modelview = mat_identity(4);
 
     // C1: DEFINE ROTATION AND TRANSLATION HERE
+    
 
     // HIDE FRUSTUM ON FIRST RENDER
     render_triangles = true;
@@ -266,8 +267,26 @@ function render_control()
     render();
 
     // B1: INSERT CODE HERE
+    // copy the webgl rendered image to other canvas
+    ctx.drawImage(gl.canvas, 0, 0);
 
     // B2: INSERT CODE HERE
+    let eye = [0.0, 0.0, 50.0];
+
+    let at = [0.0, 0.0, -max_depth];
+    let up = [0.0, 1.0, 0.0];
+
+    modelview = mat_lookat(eye,at,up);
+    projection = mat_perspective(70, aspect, 1, 500);
+
+    render_triangles = true; 
+    render_near_plane = false;
+    render_far_plane = false;
+    render_side_planes = false;
+    render_near_edges = true;
+    render_far_edges = true;
+    render_side_edges = true;
+    render();
 
     // check if screen capture requested
     capture_canvas_check();
@@ -275,6 +294,8 @@ function render_control()
     // C1: UPDATE ROTATION ANGLE AND SET ANIMATION CALLBACK
 
     // B1: INSERT CALLBACK CODE HERE
+    // ask browser to call render() again, after 1/60 second
+    window.setTimeout(render_control, 1000/60);
 }
 
 
