@@ -9,13 +9,13 @@ const UNSIGNED_SHORT_size = 2;
 var console_log = function() {};
 
 // B4 MODIFY SCENE PARAMETERS
-var num_triangles = 1000;
+var num_triangles = 10;
 var tri_radius = 50;
 var max_depth = 100;
 
 // B5 MODIFY CAMERA PARAMETERS
 let vert_fov = Math.PI/2;
-let near = 90;
+let near = 50;
 let far = 100;
 let aspect = 1;
 
@@ -254,7 +254,14 @@ function render_control()
     modelview = mat_identity(4);
 
     // C1: DEFINE ROTATION AND TRANSLATION HERE
-    
+    let identity = mat_identity(4);
+
+    let translation = [];
+    let translation_inv = [];
+    let rotate = [[Math.cos(theta), 0, -Math.sin(theta), 0],
+                  [0, 1, 0, 0]
+                  [Math.sin(theta), 0, Math.cos(theta), 0],
+                  [0, 0, 0, 1]]
 
     // HIDE FRUSTUM ON FIRST RENDER
     render_triangles = true;
@@ -279,7 +286,7 @@ function render_control()
     modelview = mat_lookat(eye,at,up);
     projection = mat_perspective(70, aspect, 1, 500);
 
-    render_triangles = false; 
+    render_triangles = true; 
     render_near_plane = true;
     render_far_plane = true;
     render_side_planes = true;
