@@ -38,6 +38,8 @@ var vertices, projection, modelview, rotation, translation;
 var vertex_loc, colour_loc, projection_loc, modelview_loc, rotation_loc, translation_loc;
 
 // C1: DECLARE translation_inv and translation_inv_loc here
+var translation_inv, translation_inv_loc;
+var identity;
 
 // control flags
 var use_colour_loc, alpha_loc;
@@ -232,6 +234,9 @@ window.onload = async function()
     alpha_loc = gl.getUniformLocation(program, 'alpha');
 
     // C1: GET ROTATION AND TRANSLATION LOCATIONS HERE
+    translation_loc = gl.getUniformLocation(program, 'translation');
+    translation_inv_loc = gl.getUniformLocation(program, 'translation_inv');
+    rotation_loc = gl.getUniformLocation(program, 'rotation');
 
     // --- rendering options ---
 
@@ -254,14 +259,6 @@ function render_control()
     modelview = mat_identity(4);
 
     // C1: DEFINE ROTATION AND TRANSLATION HERE
-    let identity = mat_identity(4);
-
-    let translation = [];
-    let translation_inv = [];
-    let rotate = [[Math.cos(theta), 0, -Math.sin(theta), 0],
-                  [0, 1, 0, 0]
-                  [Math.sin(theta), 0, Math.cos(theta), 0],
-                  [0, 0, 0, 1]]
 
     // HIDE FRUSTUM ON FIRST RENDER
     render_triangles = true;
@@ -299,10 +296,14 @@ function render_control()
     capture_canvas_check();
 
     // C1: UPDATE ROTATION ANGLE AND SET ANIMATION CALLBACK
+    theta += theta_step;
+
+    // ask browser to call render() again, after 1/60 second
+    window.setTimeout(render_control, 1000/60);
 
     // B1: INSERT CALLBACK CODE HERE
     // ask browser to call render() again, after 1/60 second
-    window.setTimeout(render_control, 1000/60);
+    // window.setTimeout(render_control, 1000/60);
 }
 
 
@@ -318,6 +319,24 @@ function render()
     gl.uniformMatrix4fv(projection_loc, false, mat_float_flat_transpose(projection));
     
     // C1: SET ROTATION AND TRANSLATION HERE
+    identity = mat_identity(4);
+
+    translation = [[1, 0, 0, 0],
+                   [0, 1, 0, 0],
+                   [0, 0, 1, max_depth/2],
+                   [0, 0, 0, 1]];
+    translation_inv = [[1, 0, 0, 0],
+                       [0, 1, 0, 0],
+                       [0, 0, 1, -max_depth/2],
+                       [0, 0, 0, 1]];
+    rotation = [[Math.cos(theta), 0, -Math.sin(theta), 0],
+                [0, 1, 0, 0],
+                [Math.sin(theta), 0, Math.cos(theta), 0],
+                [0, 0, 0, 1]];
+
+    gl.uniformMatrix4fv(translation_loc, false, mat_float_flat_transpose(translation));
+    gl.uniformMatrix4fv(translation_inv_loc, false, mat_float_flat_transpose(translation_inv));
+    gl.uniformMatrix4fv(rotation_loc, false, mat_float_flat_transpose(rotation));
 
     // enable colour in shader
     gl.uniform1i(use_colour_loc, true);
@@ -329,6 +348,10 @@ function render()
     }
 
     // C1: DISABLE ROTATION AND TRANSLATION HERE
+    gl.uniformMatrix4fv(translation_loc, false, mat_float_flat_transpose(identity));
+    gl.uniformMatrix4fv(translation_inv_loc, false, mat_float_flat_transpose(identity));
+    gl.uniformMatrix4fv(rotation_loc, false, mat_float_flat_transpose(identity));
+    
 
     if(render_near_plane || render_far_plane || render_side_edges)
         console_log('Drawing frustum...');
