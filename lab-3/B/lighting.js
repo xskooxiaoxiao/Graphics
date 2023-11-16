@@ -7,9 +7,9 @@ const fs_file = './lighting-frag.glsl';
 // illuminant properties
 // B2 -- MODIFY
 var light = {
-    position: [10.0, 5.0, 10.0, 1.0],
+    position: [10.0, 5.0, 10.0, 1.0],//[0.0, -10.0, -10.0, 1.0],
     ambient:  [1.0, 1.0, 1.0, 1.0],
-    diffuse:  [1.0, 1.0, 1.0, 1.0],
+    diffuse:  [1.0, 1.0, 1.0, 1.0],//[1.5, 1.0, 1.0, 1.0],
     specular: [1.0, 1.0, 1.0, 1.0],
 };
 
@@ -17,10 +17,15 @@ var light = {
 // B1 -- MODIFY
 var material = {
     // banana
-    ambient:  [0.5, 0.4, 0.2, 1.0],
-    diffuse:  [0.5, 0.4, 0.2, 1.0],
-    specular: [0, 0, 0, 1.0],
-    shininess: 0.0001
+    // ambient:  [0.5, 0.4, 0.2, 1.0],
+    // diffuse:  [0.5, 0.4, 0.2, 1.0],
+    // specular: [0, 0, 0, 1.0],
+    // shininess: 0.0001
+    //gold
+    ambient:  [0.24725, 0.1995, 0.0745, 1],
+    diffuse:  [0.75164, 0.60648, 0.22648, 1],
+    specular: [0.628281, 0.555802, 0.366065, 1],
+    shininess: 51.2
 };
 
 // A2 -- CHANGE THIS
@@ -179,6 +184,6 @@ window.onload = async function()
     // load the mesh and trigger init()
     // B1 -- MODIFY
     OBJ.downloadMeshes({
-        'example': '../shared/models/banana.obj'
+        'example': '../shared/models/suzanne.obj'
     }, init);
 }

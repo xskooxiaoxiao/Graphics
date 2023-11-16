@@ -24,7 +24,7 @@ var material = {
 };
 
 // A2 -- CHANGE THIS
-var num_models = 1;
+var num_models = 50;
 
 // modelview parameters
 var transform = [];
@@ -151,16 +151,22 @@ async function render()
     for(let k = 0; k < num_models; k++){
 
         // A1, A2 -- MODIFY HERE 
+        //let scaling = mat_scaling(vec_scale(12, [1,1,1])); A1
+        //let rotation = mat_motion(Math.PI/2, [1,0,0], [0,0,0]); A1
+
+        let scaling = mat_scaling(transform[k].scale);
+        let motion = mat_motion(theta, transform[k].axis, transform[k].location);
 
         // average scene depth
         let z = (far + near)/2;
 
         // 4x4 rigid motion
-        let motion = mat_motion(theta, [0,1,0], [0,0,-z]);
+        //let motion = mat_motion(theta, [0,1,0], [0,0,-z]);
 
         // uniform scaling
-        let scaling = mat_scaling([1,1,1]);
+        //let scaling = mat_scaling([1,1,1]);
 
+        //modelview = mat_prod(motion, mat_prod(rotation, scaling)); A1  
         modelview = mat_prod(motion, scaling);
 
         gl.uniformMatrix4fv(modelview_loc, false, mat_float_flat_transpose(modelview));

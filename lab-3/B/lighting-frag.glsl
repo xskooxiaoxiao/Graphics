@@ -37,9 +37,13 @@ void main()
                    light.diffuse;
 
     // B1 -- IMPLEMENT SPECULAR TERM
+    vec4 specular = material.specular *
+                    pow(max(dot(r,t), 0.0), material.shininess) *
+                    light.specular;
 
     // B3 -- IMPLEMENT BLINN SPECULAR TERM
+    
 
-    gl_FragColor = vec4((ambient + diffuse).rgb, 1.0);
+    gl_FragColor = vec4((ambient + diffuse + specular).rgb, 1.0);
 }
 
