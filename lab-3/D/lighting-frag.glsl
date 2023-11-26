@@ -36,19 +36,26 @@ void main()
                    max(dot(s,n),0.0) * 
                    light.diffuse;
 
-    // B1 -- IMPLEMENT SPECULAR TERM
+    // 
     vec4 specular = material.specular *
                     pow(max(dot(r,t), 0.0), material.shininess) *
                     light.specular;
 
-    // B3 -- IMPLEMENT BLINN SPECULAR TERM
-    vec3 h = normalize(s + t);
-    vec4 blinnSpecular = material.specular *
-                         pow(max(dot(n, h), 0.0), material.shininess * 4.0) *
-                         light.specular;
+    //D2
+    vec3 fragment_rgb = material.ambient.rgb + material.diffuse.rgb;
 
+    if (dot(s, n) > 0.9) {
+        fragment_rgb += material.specular.rgb;
+    } else if (dot(s, n) > 0.75) {
+        fragment_rgb += 0.2 * material.specular.rgb;
+    }
 
-    gl_FragColor = vec4((ambient + diffuse + specular).rgb, 1.0);
+    if (dot(t, n) < 0.4) {
+        fragment_rgb = 0.3 * material.diffuse.rgb;
+    }
+
+    gl_FragColor = vec4(fragment_rgb, 1.0);
+    //gl_FragColor = vec4((ambient + diffuse + specular).rgb, 1.0);
     //gl_FragColor = vec4((ambient + diffuse + blinnSpecular).rgb, 1.0);
 
 }

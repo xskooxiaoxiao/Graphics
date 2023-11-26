@@ -38,7 +38,8 @@ var vertices, projection, modelview, rotation, translation;
 var vertex_loc, colour_loc, projection_loc, modelview_loc, rotation_loc, translation_loc;
 
 // C1: DECLARE translation_inv and translation_inv_loc here
-var translation_inv, translation_inv_loc;
+var translation_inv;
+var translation_inv_loc;
 var identity;
 
 // control flags

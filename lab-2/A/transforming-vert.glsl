@@ -28,9 +28,9 @@ void main()
 
     // A1, A2, A3, A4, A5 -- MODIFY HERE
     //point = rotate * point;
-    //gl_Position = translate * rotate * translate_inv * point;
-    //gl_Position = shear * point;
-    //gl_Position = projective * point;
+    //gl_Position = translate * rotate * translate_inv * point; A3
+    //gl_Position = shear * point; A4
+    //gl_Position = projective * point; A5
     gl_Position = projective_inv * projective * point;
 
     // pass uniform colour to fragment shader varying

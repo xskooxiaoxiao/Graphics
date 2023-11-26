@@ -1,8 +1,8 @@
 // ECS610U -- Miles Hansard 2021
 'use strict';
 var mesh, canvas, gl;
-const vs_file = './lighting-vert-pv.glsl';
-const fs_file = './lighting-frag-pv.glsl';
+const vs_file = './lighting-vert.glsl';
+const fs_file = './lighting-frag.glsl';
 
 // illuminant properties
 // B2 -- MODIFY
@@ -39,7 +39,7 @@ let vert_fov_deg = 20.0;
 let near = 7.0;
 let far = 12.0;
 let aspect = 1;
-var theta = Math.PI;
+var theta = 0;
 
 // buffers and attributes
 var projection, modelview, animate = false;
@@ -79,6 +79,24 @@ async function init(meshes)
 
     normal_loc = gl.getAttribLocation(program, 'normal');
     gl.enableVertexAttribArray(normal_loc);
+    
+    
+    function random(min, max) {
+       return Math.random() * (max - min) + min;
+    }
+    
+    //D1
+    // for (let i = 0; i < mesh.vertices.length; i += 3) {
+    //     mesh.vertices[i] += 0.015 * random(-5, 5);
+    //     mesh.vertices[i + 1] += 0.015 * random(-5, 5);
+    //     mesh.vertices[i + 2] += 0.015 * random(-5, 5);
+    // }
+
+    // for (let i = 0; i < mesh.vertexNormals.length; i += 3) {
+    //     mesh.vertexNormals[i] += 0.15 * random(-1, 1);
+    //     mesh.vertexNormals[i + 1] += 0.15 * random(-1, 1);
+    //     mesh.vertexNormals[i + 2] += 0.15 * random(-1, 1);
+    // }
 
     // gl buffers will be created automatically by shared/webgl-obj-loader.js 
     OBJ.initMeshBuffers(gl, mesh);

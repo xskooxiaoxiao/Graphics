@@ -15,6 +15,8 @@ var max_depth = 100;
 
 // B5 MODIFY CAMERA PARAMETERS
 let vert_fov = Math.PI/2;
+// let near = 50;
+// let near = 10; B5
 let near = 90;
 let far = 100;
 let aspect = 1;
@@ -271,13 +273,28 @@ function render_control()
     ctx.drawImage(gl.canvas, 0, 0);
 
     // B2: INSERT CODE HERE
-    let eye = [110.0, 140.0, 70.0];
+    // let eye = [0.0, 0.0, 50.0]; B2
+    // let at = [0.0, 0.0, -max_depth];
+    // let up = [0.0, 1.0, 0.0];
 
+    let eye = [110.0, 140.0, 70.0]; // B4
     let at = [0.0, 0.0, -max_depth];
     let up = [0.0, 1.0, 0.0];
 
     modelview = mat_lookat(eye,at,up);
     projection = mat_perspective(70, aspect, 1, 500);
+
+    // render_triangles = true; B2
+    // render_near_plane = false;
+    // render_far_plane = false;
+    // render_side_planes = false;
+    // render_near_edges = true;
+    // render_far_edges = true;
+    // render_side_edges = true;
+
+    // render_far_plane = true; B3
+    // render_near_plane = true;
+    // render_side_planes = true;
 
     render_triangles = false; 
     render_near_plane = true;

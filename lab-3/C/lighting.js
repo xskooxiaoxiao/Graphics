@@ -1,15 +1,15 @@
 // ECS610U -- Miles Hansard 2021
 'use strict';
 var mesh, canvas, gl;
-const vs_file = './lighting-vert-pv.glsl';
-const fs_file = './lighting-frag-pv.glsl';
+const vs_file = './lighting-vert.glsl';
+const fs_file = './lighting-frag.glsl';
 
 // illuminant properties
 // B2 -- MODIFY
 var light = {
-    position: [10.0, 5.0, 10.0, 1.0],//[0.0, -10.0, -10.0, 1.0],
+    position: [10.0, 5.0, 10.0, 1.0],//[0.0, 0.0, -12.0, 1.0], [0.0, 0.0, -7.0, 1.0]
     ambient:  [1.0, 1.0, 1.0, 1.0],
-    diffuse:  [1.0, 1.0, 1.0, 1.0],//[1.5, 1.0, 1.0, 1.0],
+    diffuse:  [1.0, 1.0, 1.0, 1.0],
     specular: [1.0, 1.0, 1.0, 1.0],
 };
 
@@ -39,7 +39,7 @@ let vert_fov_deg = 20.0;
 let near = 7.0;
 let far = 12.0;
 let aspect = 1;
-var theta = Math.PI;
+var theta = 0.0;
 
 // buffers and attributes
 var projection, modelview, animate = false;
